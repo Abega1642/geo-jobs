@@ -81,6 +81,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SingleUserInfo"
+  '/roadContunier':
+      post:
+        tags:
+          - ImageProcessing
+        operationId: processImage
+        description: Traitement d'une image à partir d'un JSON, zoom et taille.
+        parameters:
+          - in: query
+            name: geojson
+            required: true
+            description: Objet JSON sous forme de chaîne (par exemple, GeoJSON).
+            schema:
+              type: string
+              example: '{"type":"Point","coordinates":[125.6, 10.1]}'
+          - in: query
+            name: zoom
+            required: true
+            description: Niveau de zoom de l’image
+            schema:
+              type: integer
+              example: 18
+          - in: query
+            name: size
+            required: true
+            description: Taille de l’image (en pixels)
+            schema:
+              type: integer
+              example: 512
+        responses:
+          '200':
+            description: Image traitée avec succès
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Image processed
+                    imageUrl:
+                      type: string
+                      example: https://cdn.birdia.fr/image/result.png
+          '500':
+            description: Requête invalide
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                      example: "Invalid JSON input"
   '/jobs/{id}/annotationProcessing':
     post:
       tags:
