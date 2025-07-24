@@ -14,7 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @AllArgsConstructor
 public class RoadContinuerService {
   private static final AlphaConf DEFAULT_ALPHA_CONF = new AlphaConf(0.55d, 1);
