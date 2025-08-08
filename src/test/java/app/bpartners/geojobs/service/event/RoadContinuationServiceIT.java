@@ -7,7 +7,7 @@ import app.bpartners.geojobs.service.RoadContinuerService;
 import java.io.File;
 import org.junit.jupiter.api.Test;
 
-class RoadContinuationServiceTest {
+class RoadContinuationServiceIT {
 
   @Test
   void accept_should_call_continueRouteAsync() {
