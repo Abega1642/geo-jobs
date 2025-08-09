@@ -23,6 +23,12 @@ public class GeoJsonRoadContinuation {
   @Column(name = "continued_geojson_path")
   private String continuedGeoJsonPath;
 
+  @Column(name = "image_zoom", nullable = false)
+  private Integer imageZoom;
+
+  @Column(name = "image_size", nullable = false)
+  private Integer imageSize;
+
   @Enumerated(EnumType.STRING)
   @Column(columnDefinition = "process_status", nullable = false)
   private RoadContinuationProcessStatus status;

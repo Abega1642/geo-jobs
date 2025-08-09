@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Slf4j
 public class RoadContinuationService implements Consumer<RoadContinuationRequested> {
+
   private final RoadContinuerService roadContinuerService;
   private final GeoJsonRoadContinuationRepository continuationRepository;
 
@@ -25,6 +26,7 @@ public class RoadContinuationService implements Consumer<RoadContinuationRequest
   public void accept(RoadContinuationRequested event) {
     File geoJsonFile = event.getGeoJSON();
     String continuationId = UUID.randomUUID().toString();
+
     log.info(
         "Reçu RoadContinuationRequested, démarrage de la continuation asynchrone (id={})",
         continuationId);
@@ -32,17 +34,22 @@ public class RoadContinuationService implements Consumer<RoadContinuationRequest
     GeoJsonRoadContinuation record = new GeoJsonRoadContinuation();
     record.setId(continuationId);
     record.setOriginalGeoJsonPath(geoJsonFile.getAbsolutePath());
+    record.setImageZoom(event.getZoom());
+    record.setImageSize(event.getImageSize());
     record.setStatus(RoadContinuationProcessStatus.PROCESSING);
+
     continuationRepository.save(record);
 
-    Map<String, String> result = null;
+    Map<String, String> result;
     try {
-      result = roadContinuerService.continueRoute(geoJsonFile, null, null);
+      result =
+          roadContinuerService.continueRoute(geoJsonFile, event.getZoom(), event.getImageSize());
     } catch (IOException e) {
+      log.error("Erreur lors de la continuation de la route (id={})", continuationId, e);
       throw new RuntimeException(e);
     }
-    String presignedUrl = result.get("url");
 
+    String presignedUrl = result.get("url");
     record.setContinuedGeoJsonPath(presignedUrl);
     record.setStatus(RoadContinuationProcessStatus.CONTINUED);
     continuationRepository.save(record);
