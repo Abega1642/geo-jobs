@@ -1,7 +1,13 @@
 package app.bpartners.geojobs.service.event;
 
 import app.bpartners.geojobs.endpoint.event.model.RoadContinuationRequested;
+import app.bpartners.geojobs.repository.GeoJsonRoadContinuationRepository;
+import app.bpartners.geojobs.repository.model.geojson.GeoJsonRoadContinuation;
+import app.bpartners.geojobs.repository.model.geojson.RoadContinuationProcessStatus;
 import app.bpartners.geojobs.service.RoadContinuerService;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
@@ -12,17 +18,35 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Slf4j
 public class RoadContinuationService implements Consumer<RoadContinuationRequested> {
-
   private final RoadContinuerService roadContinuerService;
+  private final GeoJsonRoadContinuationRepository continuationRepository;
 
   @Override
   public void accept(RoadContinuationRequested event) {
-    var geoJsonFile = event.getGeoJSON();
+    File geoJsonFile = event.getGeoJSON();
     String continuationId = UUID.randomUUID().toString();
-
     log.info(
-        "Received RoadContinuationRequested event, starting async continuation for id={}",
+        "Reçu RoadContinuationRequested, démarrage de la continuation asynchrone (id={})",
         continuationId);
-    roadContinuerService.continueRouteAsync(geoJsonFile, null, null, continuationId);
+
+    GeoJsonRoadContinuation record = new GeoJsonRoadContinuation();
+    record.setId(continuationId);
+    record.setOriginalGeoJsonPath(geoJsonFile.getAbsolutePath());
+    record.setStatus(RoadContinuationProcessStatus.PROCESSING);
+    continuationRepository.save(record);
+
+    Map<String, String> result = null;
+    try {
+      result = roadContinuerService.continueRoute(geoJsonFile, null, null);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    String presignedUrl = result.get("url");
+
+    record.setContinuedGeoJsonPath(presignedUrl);
+    record.setStatus(RoadContinuationProcessStatus.CONTINUED);
+    continuationRepository.save(record);
+
+    log.info("Continuation terminée (id={}, URL={})", continuationId, presignedUrl);
   }
 }

@@ -24,6 +24,6 @@ public class GeoJsonRoadContinuation {
   private String continuedGeoJsonPath;
 
   @Enumerated(EnumType.STRING)
-  @Column(columnDefinition = "process_status",  nullable = false)
+  @Column(columnDefinition = "process_status", nullable = false)
   private RoadContinuationProcessStatus status;
 }
