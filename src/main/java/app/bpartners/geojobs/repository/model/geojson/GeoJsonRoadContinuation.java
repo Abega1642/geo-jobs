@@ -33,6 +33,10 @@ public class GeoJsonRoadContinuation {
   private Integer imageSize;
 
   @Enumerated(EnumType.STRING)
+<<<<<<< HEAD
   @JdbcTypeCode(NAMED_ENUM)
+=======
+  @Column(columnDefinition = "process_status", nullable = false)
+>>>>>>> 6b3e4f2301c126f3f4ade93214bb86d37a0a4ebd
   private RoadContinuationProcessStatus status;
 }
