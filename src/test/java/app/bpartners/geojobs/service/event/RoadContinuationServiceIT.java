@@ -1,39 +1,43 @@
 package app.bpartners.geojobs.service.event;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
+import app.bpartners.geojobs.conf.FacadeIT;
 import app.bpartners.geojobs.endpoint.event.model.RoadContinuationRequested;
 import app.bpartners.geojobs.repository.GeoJsonRoadContinuationRepository;
-import app.bpartners.geojobs.repository.model.geojson.GeoJsonRoadContinuation;
 import app.bpartners.geojobs.service.RoadContinuerService;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 
-class RoadContinuationServiceIT {
+import java.io.File;
+import java.net.URISyntaxException;
 
-  @Test
-  void accept_should_save_and_call_continueRoute() throws IOException {
-    // Mocks
-    RoadContinuerService roadContinuerService = mock(RoadContinuerService.class);
-    GeoJsonRoadContinuationRepository continuationRepository =
-        mock(GeoJsonRoadContinuationRepository.class);
-    RoadContinuationRequested event = mock(RoadContinuationRequested.class);
-    File fakeFile = mock(File.class);
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
-    when(event.getGeoJSON()).thenReturn(fakeFile);
-    when(fakeFile.getAbsolutePath()).thenReturn("/tmp/fake.geojson");
-    when(roadContinuerService.continueRoute(any(File.class), any(), any()))
-        .thenReturn(Map.of("url", "http://fake-url"));
+class RoadContinuationServiceIT extends FacadeIT {
 
-    RoadContinuationService service =
-        new RoadContinuationService(roadContinuerService, continuationRepository);
+    @Autowired
+    private RoadContinuationService roadContinuationService;
 
-    service.accept(event);
+    @Autowired
+    private GeoJsonRoadContinuationRepository roadContinuationRepository;
 
-    verify(continuationRepository, atLeastOnce()).save(any(GeoJsonRoadContinuation.class));
-    verify(roadContinuerService, times(1)).continueRoute(eq(fakeFile), isNull(), isNull());
-  }
+    @TestConfiguration
+    static class RoadContinuationServiceTest2Configuration {
+        @Bean
+        public RoadContinuerService roadContinuerService() {
+            return mock(RoadContinuerService.class);
+        }
+    }
+
+    @Test
+    void testAcceptWithEmptyResult() throws URISyntaxException {
+        var resource = getClass().getResource("/geojson/ambohimanjaka.geojson");
+        assertNotNull(resource);
+        var geoJSON = new File(resource.toURI());
+        var event = new RoadContinuationRequested(geoJSON, 20, 1080);
+        roadContinuationService.accept(event);
+        assertFalse(roadContinuationRepository.findAll().isEmpty());
+    }
 }

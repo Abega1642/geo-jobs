@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +33,6 @@ public class GeoJsonRoadContinuation {
   private Integer imageSize;
 
   @Enumerated(EnumType.STRING)
-  @Column(columnDefinition = "process_status", nullable = false)
+  @JdbcTypeCode(NAMED_ENUM)
   private RoadContinuationProcessStatus status;
 }
