@@ -1,13 +1,13 @@
 package app.bpartners.geojobs.repository.model.geojson;
 
+import static org.hibernate.type.SqlTypes.NAMED_ENUM;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-
-import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,10 +33,6 @@ public class GeoJsonRoadContinuation {
   private Integer imageSize;
 
   @Enumerated(EnumType.STRING)
-<<<<<<< HEAD
   @JdbcTypeCode(NAMED_ENUM)
-=======
-  @Column(columnDefinition = "process_status", nullable = false)
->>>>>>> 6b3e4f2301c126f3f4ade93214bb86d37a0a4ebd
   private RoadContinuationProcessStatus status;
 }
