@@ -28,7 +28,8 @@ public class RoadContinuationService implements Consumer<RoadContinuationRequest
     String continuationId = UUID.randomUUID().toString();
 
     log.info(
-        "Reçu RoadContinuationRequested, démarrage de la continuation asynchrone (id={})",
+        "RoadContinuationRequested received, asynchronous road continuation process started"
+            + " (id={})",
         continuationId);
 
     GeoJsonRoadContinuation record = new GeoJsonRoadContinuation();
@@ -45,7 +46,7 @@ public class RoadContinuationService implements Consumer<RoadContinuationRequest
       result =
           roadContinuerService.continueRoute(geoJsonFile, event.getZoom(), event.getImageSize());
     } catch (IOException e) {
-      log.error("Erreur lors de la continuation de la route (id={})", continuationId, e);
+      log.error("Error while running road continuation process (id={})", continuationId, e);
       throw new RuntimeException(e);
     }
 
@@ -54,6 +55,6 @@ public class RoadContinuationService implements Consumer<RoadContinuationRequest
     record.setStatus(RoadContinuationProcessStatus.CONTINUED);
     continuationRepository.save(record);
 
-    log.info("Continuation terminée (id={}, URL={})", continuationId, presignedUrl);
+    log.info("Road continuation done (id={}, URL={})", continuationId, presignedUrl);
   }
 }
