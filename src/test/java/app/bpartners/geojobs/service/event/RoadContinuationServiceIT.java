@@ -51,6 +51,9 @@ class RoadContinuationServiceIT extends FacadeIT {
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
     roadContinuationService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
+    assertEquals("https://mock-presigned-url/continued-abohimanjaka.geojson", roadContinuationRepository.findAll().stream()
+            .findFirst().get().getContinuedGeoJsonPath()
+    );
   }
 
   @Test
