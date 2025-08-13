@@ -13,7 +13,6 @@ import app.bpartners.geojobs.file.hash.FileHash;
 import app.bpartners.geojobs.repository.GeoJsonRoadContinuationRepository;
 import app.bpartners.geojobs.service.RoadContinuerService;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +28,25 @@ class RoadContinuationServiceIT extends FacadeIT {
   @Autowired private GeoJsonRoadContinuationRepository roadContinuationRepository;
 
   @Test
-  void testAcceptWithEmptyResult() throws URISyntaxException, IOException {
+  void should_process_road_continuation_base() throws URISyntaxException {
     var resource = getClass().getResource("/geojson/ambohimanjaka.geojson");
     assertNotNull(resource);
     var geoJSON = new File(resource.toURI());
-    int zoom = 20;
-    int imageSize = 1_080;
+    int zoom = 17;
+    int imageSize = 1_024;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
     roadContinuationService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
+
   @Test
-  void should_process_road_continuation_with_anosy_rond_point2() throws URISyntaxException, IOException {
-    var resource = getClass().getResource("/geojson/anosy-rond-point-2.geojson");
+  void should_process_road_continuation_with_anosy_rond_point() throws URISyntaxException {
+    var resource = getClass().getResource("/geojson/anosy-rond-point.geojson");
     assertNotNull(resource);
     var geoJSON = new File(resource.toURI());
     int zoom = 20;
-    int imageSize = 1_080;
+    int imageSize = 1_040;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
     roadContinuationService.accept(event);
@@ -54,24 +54,25 @@ class RoadContinuationServiceIT extends FacadeIT {
   }
 
   @Test
-  void should_process_road_continuation_with_ambohijatovo() throws URISyntaxException, IOException {
+  void should_process_road_continuation_with_ambohijatovo() throws URISyntaxException {
     var resource = getClass().getResource("/geojson/ambohijatovo-crossed.geojson");
     assertNotNull(resource);
     var geoJSON = new File(resource.toURI());
-    int zoom = 20;
-    int imageSize = 1_080;
+    int zoom = 17;
+    int imageSize = 1_024;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
     roadContinuationService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
+
   @Test
-  void should_process_road_continuation_with_quai_de_bourbon() throws URISyntaxException, IOException {
+  void should_process_road_continuation_with_quai_de_bourbon() throws URISyntaxException {
     var resource = getClass().getResource("/geojson/quai-de-bourbon.geojson");
     assertNotNull(resource);
     var geoJSON = new File(resource.toURI());
-    int zoom = 40;
-    int imageSize = 1_900;
+    int zoom = 17;
+    int imageSize = 1_025;
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
     roadContinuationService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
