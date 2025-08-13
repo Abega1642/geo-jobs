@@ -65,7 +65,17 @@ class RoadContinuationServiceIT extends FacadeIT {
     roadContinuationService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
-
+  @Test
+  void should_process_road_continuation_with_quai_de_bourbon() throws URISyntaxException, IOException {
+    var resource = getClass().getResource("/geojson/quai-de-bourbon.geojson");
+    assertNotNull(resource);
+    var geoJSON = new File(resource.toURI());
+    int zoom = 40;
+    int imageSize = 1_900;
+    var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
+    roadContinuationService.accept(event);
+    assertFalse(roadContinuationRepository.findAll().isEmpty());
+  }
 
   @TestConfiguration
   static class MockConfig {
