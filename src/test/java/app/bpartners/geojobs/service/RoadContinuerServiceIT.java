@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import app.bpartners.geojobs.conf.FacadeIT;
-import app.bpartners.geojobs.endpoint.rest.postprocessing.GeoJsonValidator;
+import app.bpartners.geojobs.endpoint.rest.validator.GeoJsonValidator;
 import app.bpartners.geojobs.file.bucket.BucketComponent;
 import app.bpartners.geojobs.file.hash.FileHash;
 import app.bpartners.geojobs.file.hash.FileHashAlgorithm;
@@ -24,12 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class RoadContinuerServiceIT extends FacadeIT {
 
   private final BucketComponent bucketComponent = mock(BucketComponent.class);
-
-  @Autowired private GeoJsonValidator geoJsonValidator;
-
   private final GeoJsonRoadContinuationRepository continuationRepository =
       mock(GeoJsonRoadContinuationRepository.class);
-
+  @Autowired private GeoJsonValidator geoJsonValidator;
   private RoadContinuerService subject;
 
   public static MultipartFile convertFileToMultipartFile(File file) throws IOException {
@@ -40,7 +37,7 @@ public class RoadContinuerServiceIT extends FacadeIT {
 
   @BeforeEach
   public void setUp() {
-    subject = new RoadContinuerService(bucketComponent, geoJsonValidator, continuationRepository);
+    subject = new RoadContinuerService(bucketComponent);
   }
 
   @Test

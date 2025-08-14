@@ -2,7 +2,7 @@ package app.bpartners.geojobs.service;
 
 import static java.lang.Math.PI;
 
-import app.bpartners.geojobs.endpoint.rest.postprocessing.GeoJsonValidator;
+import app.bpartners.geojobs.endpoint.rest.mapper.FileFromMultipartFileMapper;
 import app.bpartners.geojobs.endpoint.rest.postprocessing.Geojson;
 import app.bpartners.geojobs.endpoint.rest.postprocessing.continuer.LatLonLinesContinuer;
 import app.bpartners.geojobs.endpoint.rest.postprocessing.model.TilingConf;
@@ -12,9 +12,7 @@ import app.bpartners.geojobs.model.geometry.route.ContinuationConf;
 import app.bpartners.geojobs.model.geometry.route.PrettyConf;
 import app.bpartners.geojobs.model.geometry.route.RoutesContinuationConf;
 import app.bpartners.geojobs.model.geometry.route.UnionConf;
-import app.bpartners.geojobs.repository.GeoJsonRoadContinuationRepository;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
@@ -36,8 +34,7 @@ public class RoadContinuerService {
       new ContinuationConf(PI / 12, PI / 6, 500);
 
   private final BucketComponent bucketComponent;
-  private final GeoJsonValidator geoJsonValidator;
-  private final GeoJsonRoadContinuationRepository continuationRepository;
+  private final FileFromMultipartFileMapper fileFromMultipartFileMapper;
 
   private static File getGeoJsonFromString(String geoJsonString) throws IOException {
     String uuidName = UUID.randomUUID().toString();
@@ -57,27 +54,9 @@ public class RoadContinuerService {
         DEFAULT_ALPHA_CONF, DEFAULT_UNION_CONF, DEFAULT_CONTINUATION_CONF, DEFAULT_PRETTY_CONF);
   }
 
-  public static File convertMultipartFileToFile(MultipartFile multipart) throws IOException {
-    String uuidName = UUID.randomUUID().toString();
-    File tempFile = File.createTempFile("to-be-continued-geojson-" + uuidName, ".geojson");
-    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-      fos.write(multipart.getBytes());
-    }
-    return tempFile;
-  }
-
   public Map<String, String> continueRoute(MultipartFile geoJSON, Integer zoom, Integer imgSize)
       throws IOException {
-    if (!geoJsonValidator.isLikelyGeoJson(geoJSON))
-      throw new IllegalArgumentException("Should be a geojson file");
-
-    File geoJsonFile = convertMultipartFileToFile(geoJSON);
-    return continueRoute(geoJsonFile, zoom, imgSize);
-  }
-
-  public Map<String, String> continueRoute(File geoJSONFile, Integer zoom, Integer imgSize)
-      throws IOException {
-    geoJsonValidator.test(geoJSONFile);
+    var geoJSONFile = fileFromMultipartFileMapper.apply(geoJSON);
 
     var tilingConf = getTilingConf(zoom, imgSize);
     log.info(
