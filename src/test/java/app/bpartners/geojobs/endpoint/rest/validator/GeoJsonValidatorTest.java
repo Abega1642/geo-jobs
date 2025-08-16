@@ -29,27 +29,27 @@ class GeoJsonValidatorTest {
       throws IOException {
     String content =
         """
-      {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [0.0, 0.0],
-                  [1.0, 0.0],
-                  [1.0, 1.0],
-                  [0.0, 1.0]
+        {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [0.0, 0.0],
+                    [1.0, 0.0],
+                    [1.0, 1.0],
+                    [0.0, 1.0]
+                  ]
                 ]
-              ]
-            },
-            "properties": {}
-          }
-        ]
-      }
-      """;
+              },
+              "properties": {}
+            }
+          ]
+        }
+        """;
     var file = getInvalidGeoJSONFile(content);
     assertThrows(IllegalArgumentException.class, () -> subject.accept(file));
   }
@@ -59,30 +59,30 @@ class GeoJsonValidatorTest {
       throws IOException {
     String content =
         """
-      {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [0.0, 0.0],
-                  [2.0, 2.0],
-                  [0.0, 2.0],
-                  [2.0, 0.0],
-                  [0.0, 0.0]
+        {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [0.0, 0.0],
+                    [2.0, 2.0],
+                    [0.0, 2.0],
+                    [2.0, 0.0],
+                    [0.0, 0.0]
+                  ]
                 ]
-              ]
-            },
-            "properties": {
-              "name": "Self-intersecting polygon"
+              },
+              "properties": {
+                "name": "Self-intersecting polygon"
+              }
             }
-          }
-        ]
-      }
-      """;
+          ]
+        }
+        """;
     var file = getInvalidGeoJSONFile(content);
     assertThrows(BadRequestException.class, () -> subject.accept(file));
   }
@@ -92,32 +92,32 @@ class GeoJsonValidatorTest {
       throws IOException {
     String content =
         """
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [0.0, 0.0],
-              [4.0, 0.0],
-              [4.0, 4.0],
-              [0.0, 4.0],
-              [0.0, 0.0]
-            ],
-            [
-              [2.0, 2.0],
-              [5.0, 2.0],
-              [5.0, 5.0],
-              [2.0, 5.0],
-              [2.0, 2.0]
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [0.0, 0.0],
+                [4.0, 0.0],
+                [4.0, 4.0],
+                [0.0, 4.0],
+                [0.0, 0.0]
+              ],
+              [
+                [2.0, 2.0],
+                [5.0, 2.0],
+                [5.0, 5.0],
+                [2.0, 5.0],
+                [2.0, 2.0]
+              ]
             ]
-          ]
-        },
-        "properties": {
-          "name": "Hole overlapping outer shell"
+          },
+          "properties": {
+            "name": "Hole overlapping outer shell"
+          }
         }
-      }
-      """;
+        """;
     var file = getInvalidGeoJSONFile(content);
     assertThrows(BadRequestException.class, () -> subject.accept(file));
   }
@@ -126,25 +126,25 @@ class GeoJsonValidatorTest {
   void invalid_geojson_with_wrong_dimension_should_throw_BadRequestException() throws IOException {
     String content =
         """
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [
-            [
-              [0.0, 0.0],
-              [2.0, 0.0, 10.0],
-              [2.0, 2.0],
-              [0.0, 2.0],
-              [0.0, 0.0]
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [0.0, 0.0],
+                [2.0, 0.0, 10.0],
+                [2.0, 2.0],
+                [0.0, 2.0],
+                [0.0, 0.0]
+              ]
             ]
-          ]
-        },
-        "properties": {
-          "name": "Dimension mismatch"
+          },
+          "properties": {
+            "name": "Dimension mismatch"
+          }
         }
-      }
-      """;
+        """;
     var file = getInvalidGeoJSONFile(content);
     assertThrows(BadRequestException.class, () -> subject.accept(file));
   }

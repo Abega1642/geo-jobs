@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-class RoadContinuationServiceIT extends FacadeIT {
+class RoadContinuationRequestedServiceIT extends FacadeIT {
 
   private static final String EXPECTED_PRESIGNED_URL =
       "https://mock-presigned-url/continued.geojson";
   private final RoadContinuerService continuer = mock(RoadContinuerService.class);
-  @Autowired private RoadContinuationService roadContinuationService;
+  @Autowired private RoadContinuationRequestedService roadContinuationRequestedService;
   @Autowired private GeoJsonRoadContinuationRepository roadContinuationRepository;
 
   @Test
@@ -36,7 +36,7 @@ class RoadContinuationServiceIT extends FacadeIT {
     int imageSize = 1_024;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
-    roadContinuationService.accept(event);
+    roadContinuationRequestedService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
 
@@ -49,7 +49,7 @@ class RoadContinuationServiceIT extends FacadeIT {
     int imageSize = 1_040;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
-    roadContinuationService.accept(event);
+    roadContinuationRequestedService.accept(event);
     var actualR = roadContinuationRepository.findAll();
     var actualContent = actualR.stream().findFirst().orElse(null);
 
@@ -66,7 +66,7 @@ class RoadContinuationServiceIT extends FacadeIT {
     int imageSize = 1_024;
 
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
-    roadContinuationService.accept(event);
+    roadContinuationRequestedService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
 
@@ -78,7 +78,7 @@ class RoadContinuationServiceIT extends FacadeIT {
     int zoom = 17;
     int imageSize = 1_025;
     var event = new RoadContinuationRequested(geoJSON, zoom, imageSize);
-    roadContinuationService.accept(event);
+    roadContinuationRequestedService.accept(event);
     assertFalse(roadContinuationRepository.findAll().isEmpty());
   }
 

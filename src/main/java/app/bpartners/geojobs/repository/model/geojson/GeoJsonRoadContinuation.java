@@ -2,6 +2,7 @@ package app.bpartners.geojobs.repository.model.geojson;
 
 import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 
+import app.bpartners.geojobs.job.model.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,14 +18,11 @@ import org.hibernate.annotations.JdbcTypeCode;
 @Setter
 public class GeoJsonRoadContinuation {
   @Id
-  @Column(name = "rc_id", nullable = false)
-  private String id;
+  @Column(name = "file_hash", nullable = false)
+  private String fileHash;
 
-  @Column(name = "original_geojson_path", nullable = false)
-  private String originalGeoJsonPath;
-
-  @Column(name = "continued_geojson_path")
-  private String continuedGeoJsonPath;
+  @Column(name = "bucket_key")
+  private String bucketKey;
 
   @Column(name = "image_zoom", nullable = false)
   private Integer imageZoom;
@@ -34,5 +32,5 @@ public class GeoJsonRoadContinuation {
 
   @Enumerated(EnumType.STRING)
   @JdbcTypeCode(NAMED_ENUM)
-  private RoadContinuationProcessStatus status;
+  private Status.ProgressionStatus status;
 }

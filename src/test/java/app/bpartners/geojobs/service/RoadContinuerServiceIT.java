@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import app.bpartners.geojobs.conf.FacadeIT;
-import app.bpartners.geojobs.endpoint.rest.validator.GeoJsonValidator;
+import app.bpartners.geojobs.endpoint.rest.mapper.FileFromMultipartFileMapper;
 import app.bpartners.geojobs.file.bucket.BucketComponent;
 import app.bpartners.geojobs.file.hash.FileHash;
 import app.bpartners.geojobs.file.hash.FileHashAlgorithm;
@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -24,20 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class RoadContinuerServiceIT extends FacadeIT {
 
   private final BucketComponent bucketComponent = mock(BucketComponent.class);
-  private final GeoJsonRoadContinuationRepository continuationRepository =
+  private final GeoJsonRoadContinuationRepository repository =
       mock(GeoJsonRoadContinuationRepository.class);
-  @Autowired private GeoJsonValidator geoJsonValidator;
+  @Autowired FileFromMultipartFileMapper fileMapper;
   private RoadContinuerService subject;
 
   public static MultipartFile convertFileToMultipartFile(File file) throws IOException {
     try (FileInputStream fis = new FileInputStream(file)) {
       return new MockMultipartFile("geojson-file", file.getName(), "application/geo+json", fis);
     }
-  }
-
-  @BeforeEach
-  public void setUp() {
-    subject = new RoadContinuerService(bucketComponent);
   }
 
   @Test
@@ -54,7 +48,7 @@ public class RoadContinuerServiceIT extends FacadeIT {
 
     when(bucketComponent.presign(anyString())).thenReturn(mockedURL);
 
-    var result = subject.continueRoute(geoJSONMultipartFile, 17, 1_024);
+    var result = subject.makeContinuation(geoJSONMultipartFile, 17, 1_024);
 
     assertNotNull(result);
     assertEquals(mockedURL, result.get("url"));
