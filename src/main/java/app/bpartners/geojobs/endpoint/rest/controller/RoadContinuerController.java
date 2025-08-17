@@ -24,6 +24,6 @@ public class RoadContinuerController {
       @RequestParam Integer zoom,
       @RequestParam Integer imageSize) {
     geoJsonValidator.accept(geoJson);
-    return roadContinuerService.continueRoute(geoJson, zoom, imageSize);
+    return roadContinuerService.makeContinuation(geoJson, zoom, imageSize);
   }
 }

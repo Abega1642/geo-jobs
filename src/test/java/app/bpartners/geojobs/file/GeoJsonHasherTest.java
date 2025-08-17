@@ -16,8 +16,8 @@ class GeoJsonHasherTest {
     assertNotNull(resource);
 
     File subjectFile = new File(resource.toURI());
-    String expected = subject.apply(subjectFile).value();
-    String actual = subject.apply(subjectFile).value();
+    String expected = subject.apply(subjectFile).value(); // first try
+    String actual = subject.apply(subjectFile).value(); // second try
 
     assertEquals(expected, actual);
   }

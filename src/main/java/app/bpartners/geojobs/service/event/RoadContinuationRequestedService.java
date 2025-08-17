@@ -70,13 +70,7 @@ public class RoadContinuationRequestedService implements Consumer<RoadContinuati
             + " (id={})",
         hash);
 
-    GeoJsonRoadContinuation record =
-        new GeoJsonRoadContinuation(
-            hash,
-            null,
-            continuationRequested.getTilingConf().z(),
-            continuationRequested.getTilingConf().imgSize(),
-            PROCESSING);
+    GeoJsonRoadContinuation record = new GeoJsonRoadContinuation(hash, null, PROCESSING);
 
     continuationRepository.save(record);
 

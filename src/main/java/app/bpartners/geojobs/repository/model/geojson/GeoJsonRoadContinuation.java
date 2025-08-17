@@ -24,12 +24,6 @@ public class GeoJsonRoadContinuation {
   @Column(name = "bucket_key")
   private String bucketKey;
 
-  @Column(name = "image_zoom", nullable = false)
-  private Integer imageZoom;
-
-  @Column(name = "image_size", nullable = false)
-  private Integer imageSize;
-
   @Enumerated(EnumType.STRING)
   @JdbcTypeCode(NAMED_ENUM)
   private Status.ProgressionStatus status;
